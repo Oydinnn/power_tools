@@ -19,30 +19,36 @@ DESC admin;
 SELECT * FROM admin
 
 CREATE TABLE tool(
-    id BIGINT NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     brand VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     tool_price DECIMAL(8, 2) NOT NULL
 );
 
+DESC tool;
 
-
-
-
+SELECT * FROM tool
 
 
 CREATE TABLE shop(
-    id BIGINT NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    ownerId BIGINT NOT NULL,
+    ownerId INT NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
-    district_id BIGINT NOT NULL,
+    district_id INT NOT NULL,
     address VARCHAR(255) NOT NULL,
-    location VARCHAR(255) NOT NULL
+    location VARCHAR(255) NOT NULL,
+
+    FOREIGN KEY(ownerId)
+    REFERENCES user(id),
+
+    FOREIGN KEY(district_id) 
+    REFERENCES district(id)
 );
-ALTER TABLE
-    shop ADD PRIMARY KEY(id);
+
+
+
 CREATE TABLE shop_tool(
     id BIGINT NOT NULL,
     shop_id BIGINT NOT NULL,
@@ -61,8 +67,12 @@ CREATE TABLE order(
 );
 ALTER TABLE
     order ADD PRIMARY KEY(id);
+
+
+
+
 CREATE TABLE user(
-    id BIGINT NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -70,16 +80,29 @@ CREATE TABLE user(
     is_active BOOLEAN NOT NULL,
     role VARCHAR(255) CHECK
         (role IN('client', 'owner')) NOT NULL,
-        address VARCHAR(255) NOT NULL
+    address VARCHAR(255) NOT NULL
 );
 ALTER TABLE
     user ADD PRIMARY KEY(id);
+
+
+
+
+
 CREATE TABLE district(
-    id BIGINT NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
-ALTER TABLE
-    district ADD PRIMARY KEY(id);
+
+DESC district
+
+SELECT * FROM district;
+
+
+
+
+
+
 ALTER TABLE
     shop_tool ADD CONSTRAINT shop_tool_tool_id_foreign FOREIGN KEY(tool_id) REFERENCES tool(id);
 ALTER TABLE

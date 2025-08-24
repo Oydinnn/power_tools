@@ -1,41 +1,41 @@
 const db = require("../config/db.config");
 
-// post admin
-const createAdmin = (req, res) => {
-  const { full_name, email, password, phone_number, is_active = false, is_creator = false } = req.body;
+// post district
+const createDistrict = (req, res) => {
+  const { name } = req.body;
   db.query(
-    `INSERT INTO admin (full_name, email, password, phone_number, is_active, is_creator) VALUES (?, ?, ?, ?, ?, ?)`,
-    [full_name, email, password, phone_number, is_active, is_creator],
+    `INSERT INTO district (name) VALUES (?)`,
+    [name],
     (error, results) => {
       if (error) {
         return res.status(500).json({
-          message: error.message,
-          message: "Error adding new admin",
+          errorMessage: error.message,
+          message: "Error adding new district",
           error: "Internal Server Error",
         });
       }
       res.status(201).json({
         statusCode: 201,
-        message: "New admin added",
+        message: "New district added",
         id: results.insertId,
       });
     }
   );
 };
-// get admin
-const getAdmin = (req, res) => {
-  const getQuery = `SELECT * FROM admin`;
+// get district
+const getDistrict = (req, res) => {
+  const getQuery = `SELECT * FROM district`;
   db.query(getQuery, (error, result) => {
     if (error) {
       console.log(error);
       return res.status(500).json({
-        message: "Error getting  admin",
+        message: "Error getting  district",
         error: "Internal Server Error",
       });
     }
     res.status(200).json({
       statusCode: 200,
-      message: "admin retrieved successfully",
+      message: "district retrieved successfully",
       data: result,
     });
   });
@@ -43,10 +43,10 @@ const getAdmin = (req, res) => {
 
 //findByName
 const findByName = (req, res) =>{
-  const {full_name} = req.query;
-  const searchPattern = `%${full_name}%`;
+  const {name} = req.query;
+  const searchPattern = `%${name}%`;
   
-  const findByNameQuery = `SELECT * FROM admin WHERE full_name LIKE ?`;
+  const findByNameQuery = `SELECT * FROM district WHERE name LIKE ?`;
   db.query(findByNameQuery, 
     [searchPattern], 
     (error, result) => {
@@ -58,90 +58,89 @@ const findByName = (req, res) =>{
 
     res.json({
       statusCode: 200,
-      message: "a find by full_name retrieved successfully",
+      message: "find by name retrieved successfully",
       data: result[0],
     });
   });
 };
 
 
-// get one admin
-const getOneAdmin = (req, res) => {
+// get one district
+const getOneDistrict = (req, res) => {
   const id = req.params.id;
-  const getOneQuery = `SELECT * FROM admin WHERE id = ?`;
+  const getOneQuery = `SELECT * FROM district WHERE id = ?`;
   db.query(getOneQuery, [id], (error, result) => {
     if (error) {
       console.log(error);
       return res.status(500).json({
-        message: "Error getting one admin",
+        message: "Error getting a district",
         error: "Internal Server Error",
       });
     }
 
     if (!result.length) {
       return res.status(404).json({
-        message: "A admin not found",
+        message: "A district not found",
       });
     }
 
     res.json({
       statusCode: 200,
-      message: "a admin retrieved successfully",
+      message: "a district retrieved successfully",
       data: result[0],
     });
   });
 };
 
-// update admin
-const updateadmin = (req, res) => {
+// update district
+const updateDistrict = (req, res) => {
   const id = req.params.id;
-  const { full_name, email, password, phone_number } = req.body;
+  const { name } = req.body;
 
-  const updateQuery = `UPDATE admin SET full_name = ?, email = ?, password = ?, phone_number = ? WHERE id = ?`;
+  const updateQuery = `UPDATE district SET name = ? WHERE id = ?`;
 
-  db.query(updateQuery, [full_name, email, password, phone_number, id], (error, result) => {
+  db.query(updateQuery, [name, id], (error, result) => {
     if (error) {
       console.log(error);
       return res.status(500).json({
-        message: "Error updating an admin",
+        message: "Error updating a district",
         error: "Internal Server Error",
       });
     }
 
     res.json({
       statusCode: 200,
-      message: "an admin updated successfully",
+      message: "a district updated successfully",
       data: result.affectedRows,
     });
   });
 };
 
-// delete admin
-const deleteAdmin = (req, res) => {
+// delete district
+const deleteDistrict = (req, res) => {
   const id = req.params.id;
-  const deleteQuery = `DELETE FROM admin where id = ?`;
+  const deleteQuery = `DELETE FROM district where id = ?`;
   db.query(deleteQuery, [id], (error, result) => {
     if (error) {
       return res.status(500).json({
-        message: "Error deleting one admin",
+        message: "Error deleting one district",
         error: "Internal Server Error",
       });
     }
 
     res.json({
       statusCode: 200,
-      message: "a admin deleted successfully",
+      message: "a district deleted successfully",
       data: result.affectedRows,
     });
   });
 };
 
-
 module.exports = {
-  createAdmin,
-  getAdmin,
+  createDistrict,
+  getDistrict,
   findByName,
-  getOneAdmin,
-  deleteAdmin,
-  updateadmin,
+  getOneDistrict,
+  deleteDistrict,
+  updateDistrict,
 };

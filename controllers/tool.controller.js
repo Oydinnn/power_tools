@@ -1,41 +1,41 @@
 const db = require("../config/db.config");
 
-// post admin
-const createAdmin = (req, res) => {
-  const { full_name, email, password, phone_number, is_active = false, is_creator = false } = req.body;
+// post Tool
+const createTool = (req, res) => {
+  const { name, brand, description, tool_price } = req.body;
   db.query(
-    `INSERT INTO admin (full_name, email, password, phone_number, is_active, is_creator) VALUES (?, ?, ?, ?, ?, ?)`,
-    [full_name, email, password, phone_number, is_active, is_creator],
+    `INSERT INTO Tool ( name, brand, description, tool_price ) VALUES (?, ?, ?, ?)`,
+    [ name, brand, description, tool_price ],
     (error, results) => {
       if (error) {
         return res.status(500).json({
           message: error.message,
-          message: "Error adding new admin",
+          message: "Error adding new Tool",
           error: "Internal Server Error",
         });
       }
       res.status(201).json({
         statusCode: 201,
-        message: "New admin added",
+        message: "New Tool added",
         id: results.insertId,
       });
     }
   );
 };
-// get admin
-const getAdmin = (req, res) => {
-  const getQuery = `SELECT * FROM admin`;
+// get Tool
+const getTool = (req, res) => {
+  const getQuery = `SELECT * FROM tool`;
   db.query(getQuery, (error, result) => {
     if (error) {
       console.log(error);
       return res.status(500).json({
-        message: "Error getting  admin",
+        message: "Error getting  Tool",
         error: "Internal Server Error",
       });
     }
     res.status(200).json({
       statusCode: 200,
-      message: "admin retrieved successfully",
+      message: "Tool retrieved successfully",
       data: result,
     });
   });
@@ -43,10 +43,10 @@ const getAdmin = (req, res) => {
 
 //findByName
 const findByName = (req, res) =>{
-  const {full_name} = req.query;
-  const searchPattern = `%${full_name}%`;
+  const {name} = req.query;
+  const searchPattern = `%${name}%`;
   
-  const findByNameQuery = `SELECT * FROM admin WHERE full_name LIKE ?`;
+  const findByNameQuery = `SELECT * FROM tool WHERE name LIKE ?`;
   db.query(findByNameQuery, 
     [searchPattern], 
     (error, result) => {
@@ -58,90 +58,89 @@ const findByName = (req, res) =>{
 
     res.json({
       statusCode: 200,
-      message: "a find by full_name retrieved successfully",
+      message: "a find by name retrieved successfully",
       data: result[0],
     });
   });
 };
 
 
-// get one admin
-const getOneAdmin = (req, res) => {
+// get one Tool
+const getOneTool = (req, res) => {
   const id = req.params.id;
-  const getOneQuery = `SELECT * FROM admin WHERE id = ?`;
+  const getOneQuery = `SELECT * FROM tool WHERE id = ?`;
   db.query(getOneQuery, [id], (error, result) => {
     if (error) {
       console.log(error);
       return res.status(500).json({
-        message: "Error getting one admin",
+        message: "Error getting one Tool",
         error: "Internal Server Error",
       });
     }
 
     if (!result.length) {
       return res.status(404).json({
-        message: "A admin not found",
+        message: "A Tool not found",
       });
     }
 
     res.json({
       statusCode: 200,
-      message: "a admin retrieved successfully",
+      message: "a Tool retrieved successfully",
       data: result[0],
     });
   });
 };
 
-// update admin
-const updateadmin = (req, res) => {
+// update Tool
+const updateTool = (req, res) => {
   const id = req.params.id;
-  const { full_name, email, password, phone_number } = req.body;
+  const { name, brand, description, tool_price  } = req.body;
 
-  const updateQuery = `UPDATE admin SET full_name = ?, email = ?, password = ?, phone_number = ? WHERE id = ?`;
+  const updateQuery = `UPDATE tool SET  name = ?, brand = ?, description = ?, tool_price = ? WHERE id = ?`;
 
-  db.query(updateQuery, [full_name, email, password, phone_number, id], (error, result) => {
+  db.query(updateQuery, [ name, brand, description, tool_price , id], (error, result) => {
     if (error) {
       console.log(error);
       return res.status(500).json({
-        message: "Error updating an admin",
+        message: "Error updating an Tool",
         error: "Internal Server Error",
       });
     }
 
     res.json({
       statusCode: 200,
-      message: "an admin updated successfully",
+      message: "an Tool updated successfully",
       data: result.affectedRows,
     });
   });
 };
 
-// delete admin
-const deleteAdmin = (req, res) => {
+// delete Tool
+const deleteTool = (req, res) => {
   const id = req.params.id;
-  const deleteQuery = `DELETE FROM admin where id = ?`;
+  const deleteQuery = `DELETE FROM tool where id = ?`;
   db.query(deleteQuery, [id], (error, result) => {
     if (error) {
       return res.status(500).json({
-        message: "Error deleting one admin",
+        message: "Error deleting one Tool",
         error: "Internal Server Error",
       });
     }
 
     res.json({
       statusCode: 200,
-      message: "a admin deleted successfully",
+      message: "a Tool deleted successfully",
       data: result.affectedRows,
     });
   });
 };
 
-
 module.exports = {
-  createAdmin,
-  getAdmin,
+  createTool,
+  getTool,
   findByName,
-  getOneAdmin,
-  deleteAdmin,
-  updateadmin,
+  getOneTool,
+  deleteTool,
+  updateTool,
 };
