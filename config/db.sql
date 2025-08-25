@@ -47,28 +47,47 @@ CREATE TABLE shop(
     REFERENCES district(id)
 );
 
+DESC shop;
+
+SELECT * FROM shop
+
 
 
 CREATE TABLE shop_tool(
-    id BIGINT NOT NULL,
-    shop_id BIGINT NOT NULL,
-    tool_id BIGINT NOT NULL,
-    rent_price DECIMAL(8, 2) NOT NULL
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    shop_id INT NOT NULL,
+    tool_id INT NOT NULL,
+    rent_price DECIMAL(8, 2) NOT NULL,
+
+    FOREIGN KEY(tool_id) 
+    REFERENCES tool(id),
+
+    FOREIGN KEY(shop_id) 
+    REFERENCES shop(id)
 );
-ALTER TABLE
-    shop_tool ADD PRIMARY KEY(id);
-CREATE TABLE order(
-    id BIGINT NOT NULL,
-    client_id BIGINT NOT NULL,
-    shop_tool_id BIGINT NOT NULL,
+
+DESC shop_tool;
+
+SELECT * FROM shop_tool
+
+CREATE TABLE `order`(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    shop_tool_id INT NOT NULL,
     order_date DATE NOT NULL,
-    period BIGINT NOT NULL,
-    total_price DECIMAL(8, 2) NOT NULL
+    period INT NOT NULL,
+    total_price DECIMAL(8, 2) NOT NULL,
+
+    FOREIGN KEY(client_id) 
+    REFERENCES user(id),
+
+    FOREIGN KEY(shop_tool_id) 
+    REFERENCES shop_tool(id)
 );
-ALTER TABLE
-    order ADD PRIMARY KEY(id);
 
+DESC `order`;
 
+SELECT * FROM `order`
 
 
 CREATE TABLE user(
@@ -82,12 +101,10 @@ CREATE TABLE user(
         (role IN('client', 'owner')) NOT NULL,
     address VARCHAR(255) NOT NULL
 );
-ALTER TABLE
-    user ADD PRIMARY KEY(id);
 
+DESC user
 
-
-
+SELECT * FROM user;
 
 CREATE TABLE district(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -97,21 +114,3 @@ CREATE TABLE district(
 DESC district
 
 SELECT * FROM district;
-
-
-
-
-
-
-ALTER TABLE
-    shop_tool ADD CONSTRAINT shop_tool_tool_id_foreign FOREIGN KEY(tool_id) REFERENCES tool(id);
-ALTER TABLE
-    shop_tool ADD CONSTRAINT shop_tool_shop_id_foreign FOREIGN KEY(shop_id) REFERENCES shop(id);
-ALTER TABLE
-    shop ADD CONSTRAINT shop_ownerid_foreign FOREIGN KEY(ownerId) REFERENCES user(id);
-ALTER TABLE
-    order ADD CONSTRAINT order_client_id_foreign FOREIGN KEY(client_id) REFERENCES user(id);
-ALTER TABLE
-    shop ADD CONSTRAINT shop_district_id_foreign FOREIGN KEY(district_id) REFERENCES district(id);
-ALTER TABLE
-    order ADD CONSTRAINT order_shop_tool_id_foreign FOREIGN KEY(shop_tool_id) REFERENCES shop_tool(id);
